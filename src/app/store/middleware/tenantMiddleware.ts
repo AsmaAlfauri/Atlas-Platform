@@ -1,8 +1,9 @@
 import { Middleware } from '@reduxjs/toolkit';
 import { switchTenant } from '../slices/tenantSlice';
 import { setUser, resetUser } from '../slices/userSlice';
-import { setPermissions, resetPermissions } from '../slices/permissionSlice';
+// import { setPermissions, resetPermissions } from '../slices/permissionSlice';
 import { setFeatures, resetFeatures } from '../slices/featureSlice';
+import { setPermissions ,resetPermissions } from '../slices/permissionSlice';
 
 // fake mock API
 const fetchTenantData = async (tenantId: string) => {

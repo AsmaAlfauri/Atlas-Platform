@@ -10,7 +10,7 @@ export const store = configureStore({
   reducer: {
     tenant: tenantReducer,
     user: userReducer,
-    permission: permissionReducer,
+    permissions: permissionReducer, 
     feature: featureReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(tenantMiddleware),

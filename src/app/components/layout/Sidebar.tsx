@@ -1,51 +1,28 @@
 'use client';
-
-import Link from 'next/link';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store/configureStore';
-
-const NAV_ITEMS = [
-  {
-    label: 'Dashboard',
-    path: '/dashboard',
-    feature: 'dashboard',
-    roles: ['Admin', 'Manager', 'Viewer'],
-  },
-  {
-    label: 'Users',
-    path: '/users',
-    feature: 'users',
-    roles: ['Admin', 'Manager'],
-  },
-  {
-    label: 'Settings',
-    path: '/settings',
-    feature: 'settings',
-    roles: ['Admin'],
-  },
-];
+import { RootState } from '../../store/configureStore';
+import Link from 'next/link';
 
 export default function Sidebar() {
-  const role = useSelector((state: RootState) => state.user.role);
-  const enabledFeatures = useSelector(
-    (state: RootState) => state.feature.enabledFeatures
-  );
+  const role = useSelector((state: RootState) => state.permissions.role);
 
-  const visibleItems = NAV_ITEMS.filter(
-    (item) =>
-      enabledFeatures.includes(item.feature) &&
-      item.roles.includes(role)
-  );
+  const links = [
+    { label: 'Dashboard', path: '/dashboard', roles: ['Admin', 'Manager', 'Viewer'] },
+    { label: 'Users', path: '/users', roles: ['Admin', 'Manager'] },
+    { label: 'Settings', path: '/settings', roles: ['Admin'] },
+  ];
 
   return (
-    <aside style={{ width: 220, padding: 16 }}>
-      <ul>
-        {visibleItems.map((item) => (
-          <li key={item.path}>
-            <Link href={item.path}>{item.label}</Link>
-          </li>
-        ))}
+    <nav style={{ width: 200, padding: 24, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {links
+          .filter((link) => link.roles.includes(role))
+          .map((link) => (
+            <li key={link.path} style={{ marginBottom: 16 }}>
+              <Link href={link.path}>{link.label}</Link>
+            </li>
+          ))}
       </ul>
-    </aside>
+    </nav>
   );
 }

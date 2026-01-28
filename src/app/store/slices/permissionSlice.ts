@@ -1,25 +1,41 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface PermissionState {
+  role: 'Admin' | 'Manager' | 'Viewer';
   permissions: string[];
 }
 
-const initialState: PermissionState = {
-  permissions: [],
+const rolePermissionsMap: Record<string, string[]> = {
+  Admin: ['view_users', 'edit_users', 'view_dashboard'],
+  Manager: ['view_users', 'view_dashboard'],
+  Viewer: ['view_dashboard'],
 };
 
-export const permissionSlice = createSlice({
-  name: 'permission',
+const initialState: PermissionState = {
+  role: 'Viewer',
+  permissions: rolePermissionsMap['Viewer'],
+};
+
+const permissionSlice = createSlice({
+  name: 'permissions',
   initialState,
   reducers: {
-    setPermissions: (state, action: PayloadAction<string[]>) => {
+    // لتغيير role تلقائياً
+    setRole(state, action: PayloadAction<'Admin' | 'Manager' | 'Viewer'>) {
+      state.role = action.payload;
+      state.permissions = rolePermissionsMap[action.payload];
+    },
+    // لتعيين صلاحيات مباشرة (مثلاً من tenantMiddleware)
+    setPermissions(state, action: PayloadAction<string[]>) {
       state.permissions = action.payload;
     },
-    resetPermissions: (state) => {
-      state.permissions = [];
+    // إعادة تهيئة الصلاحيات للوضع الافتراضي
+    resetPermissions(state) {
+      state.role = 'Viewer';
+      state.permissions = rolePermissionsMap['Viewer'];
     },
   },
 });
 
-export const { setPermissions, resetPermissions } = permissionSlice.actions;
+export const { setRole, setPermissions, resetPermissions } = permissionSlice.actions;
 export default permissionSlice.reducer;
