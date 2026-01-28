@@ -1,15 +1,19 @@
+// src/store/configureStore.ts
 import { configureStore } from '@reduxjs/toolkit';
-
-// slices placeholders
-const dummyReducer = (state = {}) => state;
+import tenantReducer from './slices/tenantSlice';
+import userReducer from './slices/userSlice';
+import permissionReducer from './slices/permissionSlice';
+import featureReducer from './slices/featureSlice';
+import { tenantMiddleware } from './middleware/tenantMiddleware';
 
 export const store = configureStore({
   reducer: {
-    tenant: dummyReducer,
-    user: dummyReducer,
-    permission: dummyReducer,
-    feature: dummyReducer,
+    tenant: tenantReducer,
+    user: userReducer,
+    permission: permissionReducer,
+    feature: featureReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(tenantMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
