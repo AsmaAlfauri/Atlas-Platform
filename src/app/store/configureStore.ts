@@ -1,4 +1,3 @@
-// src/store/configureStore.ts
 import { configureStore } from '@reduxjs/toolkit';
 import tenantReducer from './slices/tenantSlice';
 import userReducer from './slices/userSlice';
@@ -10,8 +9,8 @@ export const store = configureStore({
   reducer: {
     tenant: tenantReducer,
     user: userReducer,
-    permissions: permissionReducer, 
-    feature: featureReducer,
+    permission: permissionReducer,
+    feature: featureReducer, // <=== يجب التأكد من اسم هذا المفتاح matches slice
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(tenantMiddleware),
 });

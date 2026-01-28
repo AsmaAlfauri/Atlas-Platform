@@ -5,17 +5,17 @@ interface FeatureState {
 }
 
 const initialState: FeatureState = {
-  enabledFeatures: [],
+  enabledFeatures: [], // افتراضي: لا شيء مفعل
 };
 
-export const featureSlice = createSlice({
-  name: 'feature',
+const featureSlice = createSlice({
+  name: 'features',
   initialState,
   reducers: {
-    setFeatures: (state, action: PayloadAction<string[]>) => {
+    setFeatures(state, action: PayloadAction<string[]>) {
       state.enabledFeatures = action.payload;
     },
-    resetFeatures: (state) => {
+    resetFeatures(state) {
       state.enabledFeatures = [];
     },
   },
