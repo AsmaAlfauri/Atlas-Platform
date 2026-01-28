@@ -1,45 +1,29 @@
-import { Middleware } from '@reduxjs/toolkit';
-import { switchTenant } from '../slices/tenantSlice';
-import { setUser, resetUser } from '../slices/userSlice';
-// import { setPermissions, resetPermissions } from '../slices/permissionSlice';
 import { setFeatures, resetFeatures } from '../slices/featureSlice';
-import { setPermissions ,resetPermissions } from '../slices/permissionSlice';
+import { setPermissions, resetPermissions } from '../slices/permissionSlice';
+import { setUser, resetUser } from '../slices/userSlice';
 
-// fake mock API
 const fetchTenantData = async (tenantId: string) => {
-  // simulate API
-  return {
-    features: ['dashboard', 'users'],
-    users: [
-      { id: 'u1', name: 'Alice', role: 'Admin' },
-      { id: 'u2', name: 'Bob', role: 'Manager' },
-    ],
+  // Simulated API response
+  const tenantData = {
+    t1: { features: ['users', 'dashboard'], permissions: ['view_users', 'edit_users'] },
+    t2: { features: ['dashboard'], permissions: ['view_dashboard'] },
   };
+
+  return tenantData[tenantId];
 };
 
-export const tenantMiddleware: Middleware = (store) => (next) => async (action) => {
-  if (action.type === switchTenant.type) {
-    // reset dependent slices
-    store.dispatch(resetUser());
-    store.dispatch(resetPermissions());
-    store.dispatch(resetFeatures());
+export const tenantMiddleware = (storeAPI: any) => (next: any) => async (action: any) => {
+  if (action.type === 'tenant/switchTenant') {
+    const tenantData = await fetchTenantData(action.payload);
+    
+    // Reset previous tenant state
+    storeAPI.dispatch(resetUser());
+    storeAPI.dispatch(resetPermissions());
+    storeAPI.dispatch(resetFeatures());
 
-    // load tenant data
-    const data = await fetchTenantData(action.payload.tenantId);
-
-    // set features
-    store.dispatch(setFeatures(data.features));
-
-    // set first user as current (demo)
-    store.dispatch(setUser(data.users[0]));
-
-    // resolve permissions based on role
-    let perms: string[] = [];
-    if (data.users[0].role === 'Admin') perms = ['viewUsers', 'editUsers', 'accessDashboard'];
-    if (data.users[0].role === 'Manager') perms = ['viewUsers', 'accessDashboard'];
-    if (data.users[0].role === 'Viewer') perms = ['viewUsers'];
-
-    store.dispatch(setPermissions(perms));
+    // Set new tenant state
+    storeAPI.dispatch(setPermissions(tenantData.permissions));
+    storeAPI.dispatch(setFeatures(tenantData.features));
   }
   return next(action);
 };
