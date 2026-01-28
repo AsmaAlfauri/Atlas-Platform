@@ -1,15 +1,28 @@
+// File: src/components/layout/AppLayout.tsx
 'use client';
 
 import { ReactNode } from 'react';
 import Sidebar from './Sidebar';
 import TenantSwitcher from './TenantSwitcher';
 
-export default function AppLayout({ children }: { children: ReactNode }) {
+interface AppLayoutProps {
+  children: ReactNode;
+}
+
+export default function AppLayout({ children }: AppLayoutProps) {
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      {/* Sidebar ثابت على الجهة اليسرى */}
       <Sidebar />
-      <TenantSwitcher />
-      <main style={{ padding: 24, flex: 1 }}>{children}</main>
+
+      {/* المحتوى الرئيسي */}
+      <main style={{ flex: 1, padding: 24 }}>
+        {/* Tenant Switcher فوق المحتوى لتغيير الشركة بشكل ديناميكي */}
+        <TenantSwitcher />
+
+        {/* المحتوى الخاص بالصفحة */}
+        {children}
+      </main>
     </div>
   );
 }
